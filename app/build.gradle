@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '23.0.0'
+
+    defaultConfig {
+        applicationId "rocher.adrien.droidopenhomeplayer"
+        minSdkVersion 19
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile files('libs/ohnet.jar')
+    compile files('libs/log4j-1.2.16.jar')
+    compile files('libs/javax.json-1.0.jar')
+    compile files('libs/log4j-systemd-journal-appender-1.2.0.jar')
+    compile files('libs/ohnet-generated.jar')
+    compile files('libs/airplay/bcpkix-jdk15on-151.jar')
+    compile files('libs/airplay/bcprov-jdk15on-151.jar')
+}
+
+task copyJniLibs(type: Copy) {
+    from 'libs/armeabi'
+    into 'src/main/jniLibs/armeabi'
+}
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn(copyJniLibs)
+}
+clean.dependsOn 'cleanCopyJniLibs'
