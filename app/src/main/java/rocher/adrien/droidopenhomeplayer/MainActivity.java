@@ -82,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
             iDevice.setEnabled();
 
-// TODO : Create PlaylistProvider
-            //DvProviderAvOpenhomeOrgPlaylist1 iPlayListProvider = new DvProviderAvOpenhomeOrgPlaylist1(iDevice);
-            //PlayListProvider iPlayListProvider = new PlayListProvider(*iDevice)
             PrvPlayList iPlayListProvider = new PrvPlayList(iDevice);
 
         }
