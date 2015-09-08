@@ -11,9 +11,8 @@ import java.util.Properties;
 import org.openhome.net.core.InitParams;
 import org.openhome.net.core.Library;
 import org.openhome.net.core.DeviceStack;
-import org.openhome.net.device.DvDeviceStandard;
-import org.openhome.net.device.IDvDeviceListener;
-
+import org.openhome.net.device.DvDevice;
+import org.openhome.net.device.DvDeviceFactory;
 
 /*
 import org.rpi.config.Config;
@@ -23,13 +22,17 @@ import org.rpi.utils.NetworkUtils;
 import rocher.adrien.droidopenhomeplayer.Utils.Config;
 import rocher.adrien.droidopenhomeplayer.Utils.NetworkUtils;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvPlayList;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvAvTransport;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvReceiver;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvProduct;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Library lib;
-    private boolean LibraryRunning;
+    private Library lib = null;
+    private boolean LibraryRunning = false;
 
-    private DvDeviceStandard iDevice;
+    //private DvDeviceStandard iDevice;
+    private DvDevice iDevice = null;
     private static Properties custom_product = null;
 
     @Override
@@ -65,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
             DeviceStack ds = lib.startDv();
 
-            iDevice = new DvDeviceStandard(iDeviceUdn);
+
+            //iDevice = new DvDeviceStandard(iDeviceUdn);
+            iDevice = new DvDeviceFactory(ds).createDeviceStandard(Config.getInstance().getUdn());
 
             iDevice.setAttribute("Upnp.Domain", "upnp.org");
             iDevice.setAttribute("Upnp.Type", "MediaRenderer");
@@ -80,9 +85,13 @@ public class MainActivity extends AppCompatActivity {
             iDevice.setAttribute("Upnp.SerialNumber", Config.getInstance().getSerialNumber());
             iDevice.setAttribute("Upnp.PresentationUrl", "http://" + NetworkUtils.getIPAddress(true) + ":" + Config.getInstance().getWebServerPort());
 
-            iDevice.setEnabled();
 
             PrvPlayList iPlayListProvider = new PrvPlayList(iDevice);
+            PrvAvTransport iAvTransport = new PrvAvTransport(iDevice);
+            PrvReceiver iReceiver = new PrvReceiver(iDevice);
+            PrvProduct iProduct = new PrvProduct(iDevice);
+            
+            iDevice.setEnabled();
 
         }
         return true;
