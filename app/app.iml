@@ -92,12 +92,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="ohnet" level="project" />
     <orderEntry type="library" exported="" name="log4j-systemd-journal-appender-1.2.0" level="project" />
-    <orderEntry type="library" exported="" name="bcpkix-jdk15on-151" level="project" />
     <orderEntry type="library" exported="" name="ohnet-generated" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="javax.json-1.0" level="project" />
-    <orderEntry type="library" exported="" name="bcprov-jdk15on-151" level="project" />
-    <orderEntry type="library" exported="" name="apache-jul-log4j-bridge-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="log4j-1.2.16" level="project" />
