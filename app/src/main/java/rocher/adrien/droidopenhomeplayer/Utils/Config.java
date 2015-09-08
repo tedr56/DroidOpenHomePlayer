@@ -90,6 +90,7 @@ enum CustomProductProps {
 //	MODEL_INFO("model_info"), 
 //	MODEL_URL("model_url"),
 //	MODEL_IMAGE_URI("model_image_uri"),
+    MEDIAPLAYER_SAVE_LOCAL_PLAYLIST_PATH("mediaplayer_save_local_playlist_path"),
 	PACKAGED_IMAGE_FILENAME("packaged_image_filename");
 
 	private final String stringValue;
@@ -375,7 +376,7 @@ public class Config {
 	 * @return the manufacturer name
 	 */
 	public String getManufacturerName() {
-		return Config.getInstance().getCustomProductValue(CustomProductProps.MANUFACTURER_NAME, "Pete Hoyle");
+		return Config.getInstance().getCustomProductValue(CustomProductProps.MANUFACTURER_NAME, "Adrien Rocher");
 	}
 
 	/**
@@ -530,6 +531,10 @@ public class Config {
 		// Config.mediaplayer_save_local_playlist =
 		// mediaplayer_save_local_playlist;
 	}
+
+	public String MediaplayerSaveLocalPlaylistPath() {
+        return Config.getInstance().getCustomProductValue(CustomProductProps.MEDIAPLAYER_SAVE_LOCAL_PLAYLIST_PATH, "/data/rocher.adrien.droidopenhomeplayer/playlist.txt");
+    }
 
 	/**
 	 * @return the mplayer_play_definitions
