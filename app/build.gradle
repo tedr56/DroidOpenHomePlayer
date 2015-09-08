@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-
 android {
     compileSdkVersion 22
     buildToolsVersion '23.0.0'
@@ -18,11 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    /*
-    dexOptions {
-        preDexLibraries = false
-    }
-    */
 }
 
 dependencies {
@@ -31,12 +25,12 @@ dependencies {
     compile files('libs/log4j-1.2.16.jar')
     compile files('libs/log4j-systemd-journal-appender-1.2.0.jar')
     compile files('libs/javax.json-1.0.jar')
-    /*
-    compile files('libs/airplay/bcpkix-jdk15on-151.jar')
-    compile files('libs/airplay/bcprov-jdk15on-151.jar')
-     */
+
     compile files('libs/ohnet.jar')
     compile files('libs/ohnet-generated.jar')
+
+    //compile files('libs/airplay/bcpkix-jdk15on-151.jar')
+    //compile files('libs/airplay/bcprov-jdk15on-151.jar')
 }
 
 task copyJniLibs(type: Copy) {
