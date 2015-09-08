@@ -1,7 +1,5 @@
 package rocher.adrien.droidopenhomeplayer.Providers;
 
-
-
 import org.apache.log4j.Logger;
 import org.openhome.net.device.DvDevice;
 import org.openhome.net.device.IDvInvocation;

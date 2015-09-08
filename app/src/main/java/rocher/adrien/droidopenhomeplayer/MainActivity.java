@@ -19,6 +19,7 @@ import org.rpi.config.Config;
 import org.rpi.utils.NetworkUtils;
 */
 
+import rocher.adrien.droidopenhomeplayer.Main.SimpleDevice;
 import rocher.adrien.droidopenhomeplayer.Utils.Config;
 import rocher.adrien.droidopenhomeplayer.Utils.NetworkUtils;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvPlayList;
@@ -28,12 +29,15 @@ import rocher.adrien.droidopenhomeplayer.Providers.PrvProduct;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Library lib = null;
     private boolean LibraryRunning = false;
+    /*
+        private Library lib = null;
 
-    //private DvDeviceStandard iDevice;
-    private DvDevice iDevice = null;
-    private static Properties custom_product = null;
+        //private DvDeviceStandard iDevice;
+        private DvDevice iDevice = null;
+        private static Properties custom_product = null;
+    */
+    private SimpleDevice simpleDevice = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected boolean createUpnpDevice() {
         if (!LibraryRunning) {
+            simpleDevice = new SimpleDevice();
+/*
             InitParams initParams = new InitParams();
             //initParams.setMsearchTimeSecs(1);
             // MsearchTimeSecs = 1,
@@ -90,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
             PrvAvTransport iAvTransport = new PrvAvTransport(iDevice);
             PrvReceiver iReceiver = new PrvReceiver(iDevice);
             PrvProduct iProduct = new PrvProduct(iDevice);
-            
-            iDevice.setEnabled();
 
+            iDevice.setEnabled();
+*/
         }
         return true;
     }
@@ -125,8 +131,11 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         getDelegate().onDestroy();
         if (LibraryRunning) {
+            simpleDevice.dispose();
+/*
             iDevice.destroy();
             lib.close();
+*/
         }
     }
 
