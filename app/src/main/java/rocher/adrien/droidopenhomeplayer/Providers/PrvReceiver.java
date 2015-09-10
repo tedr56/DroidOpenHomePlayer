@@ -27,10 +27,106 @@ public class PrvReceiver extends DvProviderAvOpenhomeOrgReceiver1 implements IDi
     private Logger log = Logger.getLogger(PrvReceiver.class);
     private boolean bPlay = false;
     private ChannelPlayList track = null;
+    //private OHZManager manager = null;
+    //private OHZConnector manager = null;
     private String zoneID = "";
 
-    public PrvReceiver(DvDevice dvDevice) {
-        super(dvDevice);
+    public PrvReceiver(DvDevice iDevice) {
+        super(iDevice);
+        log.debug("Creating custom OpenHome Receiver service");
+        enablePropertyMetadata();
+        enablePropertyProtocolInfo();
+        enablePropertyTransportState();
+        enablePropertyUri();
+
+        setPropertyMetadata("");
+        setPropertyProtocolInfo(Config.getInstance().getProtocolInfo());
+        setPropertyTransportState("Stopped");
+        setPropertyUri("");
+
+        enableActionPlay();
+        enableActionProtocolInfo();
+        enableActionSender();
+        enableActionSetSender();
+        enableActionStop();
+        enableActionTransportState();
+        PlayManager.getInstance().observeSongcastEvents(this);
+    }
+
+    @Override
+    protected String protocolInfo(IDvInvocation paramIDvInvocation) {
+        log.debug("getProtocolInfo" + Utils.getLogText(paramIDvInvocation));
+        return getPropertyProtocolInfo();
+    }
+
+    @Override
+    protected Sender sender(IDvInvocation paramIDvInvocation) {
+        log.debug("Sender" + Utils.getLogText(paramIDvInvocation));
+        Sender sender = new Sender("", "");
+        return sender;
+    }
+
+    @Override
+    protected void play(IDvInvocation paramIDvInvocation) {
+        log.debug("Play" + Utils.getLogText(paramIDvInvocation));
+        bPlay = true;
+        // Play seems to come before setSender so set a boolean flag that we
+        // want to play and then when we
+        // get the setSender event start playing??
+    }
+
+    @Override
+    protected void setSender(IDvInvocation paramIDvInvocation, String uri, String metadata) {
+        log.debug("SetSender, URL: " + uri + " MetaData: " + metadata + Utils.getLogText(paramIDvInvocation));
+        propertiesLock();
+        setPropertyUri(uri);
+        propertiesUnlock();
+        setPropertyMetadata(metadata);
+/*
+        if (bPlay = true) {
+            String ip = Utils.getAdapterIP(paramIDvInvocation.getAdapter());
+            String nic = "";
+            ChannelSongcast track = new ChannelSongcast(uri, metadata, 1);
+            try {
+                InetAddress local_address = InetAddress.getByName(ip);
+
+                Enumeration e = NetworkInterface.getNetworkInterfaces();
+                while (e.hasMoreElements()) {
+                    NetworkInterface n = (NetworkInterface) e.nextElement();
+                    Enumeration ee = n.getInetAddresses();
+                    //log.info("Network Interface Display Name: '" + n.getDisplayName() + "'");
+                    //log.info("NIC Name: '" + n.getName() + "'");
+                    while (ee.hasMoreElements()) {
+                        InetAddress i = (InetAddress) ee.nextElement();
+                        if (i.getHostAddress().equalsIgnoreCase(ip)) {
+                            log.info("IPAddress for Network Interface: " + n.getDisplayName() + " : " + i.getHostAddress());
+                            nic = n.getName();
+                            Config.getInstance().setSongCastNICName(nic);
+                        }
+                    }
+                }
+
+                PlayManager.getInstance().playSongcast(track);
+
+                if (manager != null) {
+                    manager.stop(zoneID);
+                    manager = null;
+                }
+                int lastSlash = uri.lastIndexOf("/");
+                String songcast_url = uri.substring(0, lastSlash);
+                zoneID = uri.substring(lastSlash + 1);
+                log.debug("SongCast URL: " + songcast_url + " ZoneID: " + zoneID);
+                manager = new OHZConnector(songcast_url, zoneID, local_address);
+                manager.run();
+                //manager = new OHZManager(songcast_url, zoneID, nic);
+                //manager.start();
+            } catch (Exception e) {
+                log.error("Error Starting Songcast Playback: ", e);
+
+            }
+
+        }
+        */
     }
 
     @Override
@@ -40,9 +136,22 @@ public class PrvReceiver extends DvProviderAvOpenhomeOrgReceiver1 implements IDi
     }
 
     private void stop() {
-//        manager.stop(zoneID);
-//        manager = null;
-        PlayManager.getInstance().setStatus("Stopped","SONGCAST");
+        /*
+        manager.stop(zoneID);
+        manager = null;
+        */
+        PlayManager.getInstance().setStatus("Stopped", "SONGCAST");
+    }
+
+    @Override
+    protected String transportState(IDvInvocation paramIDvInvocation) {
+        log.debug("Transport State" + Utils.getLogText(paramIDvInvocation));
+        return getPropertyTransportState();
+    }
+
+    @Override
+    public String getName() {
+        return "Receiver";
     }
 
     @Override
@@ -59,12 +168,8 @@ public class PrvReceiver extends DvProviderAvOpenhomeOrgReceiver1 implements IDi
         }
 
     }
+
     public void setStatus(String status) {
         setPropertyTransportState(status);
-    }
-
-    @Override
-    public String getName() {
-        return "Receiver";
     }
 }
