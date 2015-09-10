@@ -15,7 +15,7 @@ public class PlayListWriter extends Thread {
 	private CopyOnWriteArrayList<ChannelPlayList> tracks = null;
 	private Logger log = Logger.getLogger(PlayListWriter.class);
 
-    private String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
+    //private String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
 	public PlayListWriter() {
 		this.setName("PlayListWriter");
 	}
@@ -52,6 +52,7 @@ public class PlayListWriter extends Thread {
 						FileWriter out = null;
 						try {
 							String s = new String(xml.getBytes(), "UTF-8");
+							String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
 							out = new FileWriter(playlistPath);
 							try {
 								out.write(s);

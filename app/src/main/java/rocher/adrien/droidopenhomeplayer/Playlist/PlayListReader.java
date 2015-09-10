@@ -25,7 +25,7 @@ public class PlayListReader {
 
 	private static Logger log = Logger.getLogger(PlayListReader.class);
 	private PrvPlayList iPlayList = null;
-	private String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
+	//private String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
 
 	private int max_id = 0;
 
@@ -37,6 +37,7 @@ public class PlayListReader {
 		tracks.clear();
 		try {
 			long startTime = System.nanoTime();
+			String playlistPath = Config.getInstance().MediaplayerSaveLocalPlaylistPath();
 			File file = new File(playlistPath);
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
