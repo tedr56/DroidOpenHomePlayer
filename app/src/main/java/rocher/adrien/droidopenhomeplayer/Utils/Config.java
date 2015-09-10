@@ -24,11 +24,15 @@ import org.apache.log4j.net.SyslogAppender;
 
 import de.bwaldvogel.log4j.*;
 
+import rocher.adrien.droidopenhomeplayer.MainActivity;
 import rocher.adrien.droidopenhomeplayer.Utils.NetworkUtils;
 import rocher.adrien.droidopenhomeplayer.Utils.CustomPatternLayout;
 import rocher.adrien.droidopenhomeplayer.Utils.MemoryAppender;
 import rocher.adrien.droidopenhomeplayer.Utils.Utils;
 
+import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.content.ContextWrapper;
 
 enum Props {
 	PRODUCT_ROOM("mediaplayer_room_name"),
@@ -130,6 +134,8 @@ public class Config {
 
 	private static Config instance = null;
 
+    private static AppCompatActivity mActivity = null;
+
 	public static Config getInstance() {
 		if (instance == null) {
 			instance = new Config();
@@ -142,6 +148,10 @@ public class Config {
 		cal = Calendar.getInstance();
 		getConfig();
 	}
+
+    public static void setActivity(AppCompatActivity MainActivity) {
+        mActivity = MainActivity;
+    }
 
 	public static int convertStringToInt(String s) {
 		try {
@@ -532,8 +542,18 @@ public class Config {
 		// mediaplayer_save_local_playlist;
 	}
 
+	public void setMediaplayerSaveLocalPlaylistPath() {
+
+	}
 	public String MediaplayerSaveLocalPlaylistPath() {
-        return Config.getInstance().getCustomProductValue(CustomProductProps.MEDIAPLAYER_SAVE_LOCAL_PLAYLIST_PATH, "/data/rocher.adrien.droidopenhomeplayer/playlist.txt");
+        //return Config.getInstance().getCustomProductValue(CustomProductProps.MEDIAPLAYER_SAVE_LOCAL_PLAYLIST_PATH, "/data/rocher.adrien.droidopenhomeplayer/playlist.txt");
+		if (mActivity == null) {
+            return null;
+        }
+        else {
+            String filepath = mActivity.getApplicationContext().getFilesDir()+ File.separator + "playlist.xml";
+            return Config.getInstance().getCustomProductValue(CustomProductProps.MEDIAPLAYER_SAVE_LOCAL_PLAYLIST_PATH, mActivity.getApplicationContext().getFilesDir()+ File.separator + "playlist.xml");
+        }
     }
 
 	/**
