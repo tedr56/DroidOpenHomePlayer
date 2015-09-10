@@ -35,17 +35,17 @@ import rocher.adrien.droidopenhomeplayer.Player.events.EventSourceChanged;
 import rocher.adrien.droidopenhomeplayer.Plugingateway.PluginGateWay;
 import rocher.adrien.droidopenhomeplayer.Providers.IDisposableDevice;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvAvTransport;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvConnectionManager;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvCredentials;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvInfo;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvConnectionManager;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvCredentials;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvInfo;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvPlayList;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvProduct;
 //import rocher.adrien.droidopenhomeplayer.Providers.PrvRadio;
 import rocher.adrien.droidopenhomeplayer.Providers.PrvReceiver;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvRenderingControl;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvRenderingControl;
 //import rocher.adrien.droidopenhomeplayer.Providers.PrvSongcast;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvTime;
-//import rocher.adrien.droidopenhomeplayer.Providers.PrvVolume;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvTime;
+import rocher.adrien.droidopenhomeplayer.Providers.PrvVolume;
 import rocher.adrien.droidopenhomeplayer.Sources.Source;
 import rocher.adrien.droidopenhomeplayer.Sources.SourceReader;
 import rocher.adrien.droidopenhomeplayer.Utils.NetworkUtils;
@@ -57,18 +57,18 @@ public class SimpleDevice implements IResourceManager, IDvDeviceListener, IMessa
 	private DvDevice iDevice = null;
 	private Library lib = null;
 
-	//private PrvConnectionManager iConnectionManager = null;
-	//private PrvVolume iVolume = null;
+	private PrvConnectionManager iConnectionManager = null;
+	private PrvVolume iVolume = null;
 	private PrvPlayList iPlayList = null;
 	private PrvProduct iProduct = null;
-	//private PrvInfo iInfo = null;
-	//private PrvTime iTime = null;
+	private PrvInfo iInfo = null;
+	private PrvTime iTime = null;
 	//private PrvRadio iRadio = null;
 	private PrvReceiver iReceiver = null;
 	private PrvAvTransport iAVTransport = null;
-	//private PrvRenderingControl iRenderingControl = null;
+	private PrvRenderingControl iRenderingControl = null;
 	//private PrvSongcast iSongcastSender = null;
-	//private PrvCredentials iCredentials = null;
+	private PrvCredentials iCredentials = null;
 	//private HttpServerGrizzly httpServer = null;
 
 	//private AirPlayThread airplay = null;
@@ -118,12 +118,12 @@ public class SimpleDevice implements IResourceManager, IDvDeviceListener, IMessa
 		iDevice.setAttribute("Upnp.ModelUrl", Config.getInstance().getProductUrl());
 		iDevice.setAttribute("Upnp.SerialNumber", Config.getInstance().getSerialNumber());
 		iDevice.setAttribute("Upnp.PresentationUrl", "http://" + NetworkUtils.getIPAddress(true) + ":" + Config.getInstance().getWebServerPort());
-		//iConnectionManager = new PrvConnectionManager(iDevice);
+		iConnectionManager = new PrvConnectionManager(iDevice);
 		iProduct = new PrvProduct(iDevice);
-		//iVolume = new PrvVolume(iDevice);
+		iVolume = new PrvVolume(iDevice);
 		iPlayList = new PrvPlayList(iDevice);
-		//iInfo = new PrvInfo(iDevice);
-		//iTime = new PrvTime(iDevice);
+		iInfo = new PrvInfo(iDevice);
+		iTime = new PrvTime(iDevice);
 		//iRadio = new PrvRadio(iDevice);
 
 		if (Config.getInstance().isMediaplayerEnableReceiver()) {
@@ -131,11 +131,11 @@ public class SimpleDevice implements IResourceManager, IDvDeviceListener, IMessa
 		}
 		if (Config.getInstance().isMediaplayerEnableAVTransport()) {
 			iAVTransport = new PrvAvTransport(iDevice);
-			//iRenderingControl = new PrvRenderingControl(iDevice);
+			iRenderingControl = new PrvRenderingControl(iDevice);
 		}
 		
 		//iSongcastSender = new PrvSongcast(iDevice);
-		//iCredentials = new PrvCredentials(iDevice);
+		iCredentials = new PrvCredentials(iDevice);
 
 		//// updateRadioList();
 
