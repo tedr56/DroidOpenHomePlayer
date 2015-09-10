@@ -50,55 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected boolean createUpnpDevice() {
         if (!LibraryRunning) {
+            Config.getInstance().setActivity(this);
             simpleDevice = new SimpleDevice();
-/*
-            InitParams initParams = new InitParams();
-            //initParams.setMsearchTimeSecs(1);
-            // MsearchTimeSecs = 1,
-            //initParams.setUseLoopbackNetworkAdapter();
-            //UseLoopbackNetworkAdapter = true,
-            //initParams.setDvServerPort(0);//DvUpnpWebServerPort = 0
-
-            //initParams.getMsearchTimeSecs();
-            //initParams.getDvServerPort();
-
-            lib = new Library();
-            lib.initialise(initParams);
-
-
-            LibraryRunning = true;
-
-            String iDeviceName = "DroidPlayer";
-            String iDeviceUdn  = Config.getInstance().getUdn();
-            String friendly_name = Config.getInstance().getProductRoom() + ":" + Config.getInstance().getProductName();
-
-            DeviceStack ds = lib.startDv();
-
-
-            //iDevice = new DvDeviceStandard(iDeviceUdn);
-            iDevice = new DvDeviceFactory(ds).createDeviceStandard(Config.getInstance().getUdn());
-
-            iDevice.setAttribute("Upnp.Domain", "upnp.org");
-            iDevice.setAttribute("Upnp.Type", "MediaRenderer");
-            iDevice.setAttribute("Upnp.Version", "1");
-            iDevice.setAttribute("Upnp.FriendlyName", friendly_name);
-            iDevice.setAttribute("Upnp.Manufacturer", Config.getInstance().getManufacturerName());
-            iDevice.setAttribute("Upnp.ManufacturerUrl", Config.getInstance().getManufacturerUrl());
-            iDevice.setAttribute("Upnp.ModelName", Config.getInstance().getProductName());
-            iDevice.setAttribute("Upnp.ModelNumber", Config.getInstance().getVersion());
-            iDevice.setAttribute("Upnp.ModelDescription", Config.getInstance().getProductInfo());
-            iDevice.setAttribute("Upnp.ModelUrl", Config.getInstance().getProductUrl());
-            iDevice.setAttribute("Upnp.SerialNumber", Config.getInstance().getSerialNumber());
-            iDevice.setAttribute("Upnp.PresentationUrl", "http://" + NetworkUtils.getIPAddress(true) + ":" + Config.getInstance().getWebServerPort());
-
-
-            PrvPlayList iPlayListProvider = new PrvPlayList(iDevice);
-            PrvAvTransport iAvTransport = new PrvAvTransport(iDevice);
-            PrvReceiver iReceiver = new PrvReceiver(iDevice);
-            PrvProduct iProduct = new PrvProduct(iDevice);
-
-            iDevice.setEnabled();
-*/
         }
         return true;
     }
