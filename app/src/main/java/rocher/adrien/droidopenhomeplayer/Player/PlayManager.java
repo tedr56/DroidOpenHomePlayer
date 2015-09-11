@@ -12,13 +12,9 @@ import rocher.adrien.droidopenhomeplayer.Channel.ChannelBase;
 import rocher.adrien.droidopenhomeplayer.Channel.ChannelPlayList;
 import rocher.adrien.droidopenhomeplayer.Channel.ChannelRadio;
 import rocher.adrien.droidopenhomeplayer.Channel.ChannelSongcast;
-import rocher.adrien.droidopenhomeplayer.Utils.Config;
 
-import rocher.adrien.droidopenhomeplayer.Player.events.EventAirPlayerStop;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventAirplayVolumeChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventBase;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventFinishedCurrentTrack;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventMuteChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListPlayingTrackID;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListStatusChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListUpdateShuffle;
@@ -29,18 +25,9 @@ import rocher.adrien.droidopenhomeplayer.Player.events.EventReceiverStatusChange
 import rocher.adrien.droidopenhomeplayer.Player.events.EventRequestVolumeDec;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventRequestVolumeInc;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventStandbyChanged;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventStatusChanged;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventStopSongcast;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventTimeUpdate;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventTrackChanged;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventUpdateTrackMetaText;
-import rocher.adrien.droidopenhomeplayer.Player.events.EventVolumeChanged;
 import rocher.adrien.droidopenhomeplayer.Player.observers.*;
-
-/*
-import org.rpi.mpdplayer.MPDPlayerController;
-import org.rpi.mplayer.MPlayerController;
-*/
 
 public class PlayManager implements Observer {
 
@@ -112,6 +99,7 @@ public class PlayManager implements Observer {
         }
         mPlayer.addObserver(this);
         */
+
     }
 
     /**
@@ -120,14 +108,14 @@ public class PlayManager implements Observer {
      * @param t
      */
     private void playThis(ChannelBase t) {
-        /*
         if (t != null) {
             if(standby)
             {
                 log.debug("We are playing a Channel, take out of Standby");
                 setStandby(false);
             }
-            if (current_track instanceof ChannelSongcast) {
+/*
+          if (current_track instanceof ChannelSongcast) {
                 EventStopSongcast ev = new EventStopSongcast();
                 obsvSongcast.notifyChange(ev);
             }
@@ -135,27 +123,41 @@ public class PlayManager implements Observer {
                 EventAirPlayerStop eva = new EventAirPlayerStop();
                 obsvAirPlay.notifyChange(eva);
             }
-
+*/
+            mPlayer = getTypePlayer(t);
             current_track = t;
             long v = mplayer_volume;
             if (!isUseExternalVolume())
                 v = volume;
             mPlayer.playThis(t, v, bMute);
         }
-        */
     }
 
     private IPlayerController getTypePlayer(ChannelBase t) {
         IPlayerController playerController = null;
         String MimeType = t.getMime();
-        if (MimeType != null) {
-
+        String BaseMimeType = MimeType.split("/")[0];
+        if (BaseMimeType != null) {
+            if (BaseMimeType == "Audio")
+            {
+                playerController = mAudioPlayer;
+            }
+            else if (BaseMimeType == "Video")
+            {
+                playerController = mVideoPlayer;
+            }
+            else if (BaseMimeType == "Video")
+            {
+                playerController = mImagePlayer;
+            }
+            log.trace(MimeType);
         }
         else {
             playerController = mVideoPlayer;
         }
         return playerController;
     }
+
     /**
      * Set the Next Track to be played
      *
