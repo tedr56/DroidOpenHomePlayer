@@ -153,6 +153,10 @@ public class Config {
         mActivity = MainActivity;
     }
 
+	public static AppCompatActivity getActivity() {
+		return mActivity;
+	}
+
 	public static int convertStringToInt(String s) {
 		try {
 			return Integer.parseInt(s);
