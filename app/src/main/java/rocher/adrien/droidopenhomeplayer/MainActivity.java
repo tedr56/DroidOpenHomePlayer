@@ -43,9 +43,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createUpnpDevice();
-
         setContentView(R.layout.activity_main);
+        createUpnpDevice();
     }
 
     protected boolean createUpnpDevice() {
