@@ -1,8 +1,10 @@
 package rocher.adrien.droidopenhomeplayer.Utils;
 
-import org.apache.http.conn.util.InetAddressUtils;
+//import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.log4j.Logger;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -153,7 +155,7 @@ public class NetworkUtils {
 				for (InetAddress addr : addrs) {
 					if (!addr.isLoopbackAddress()) {
 						String sAddr = addr.getHostAddress().toUpperCase();
-						boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+						boolean isIPv4 = isValidIPv4Address(sAddr);
 						if (useIPv4) {
 							if (isIPv4)
 								return sAddr;
@@ -171,6 +173,21 @@ public class NetworkUtils {
 	}
 
 
+	static public boolean isValidIPv4Address (final String hostName) {
+		try {
+			return Inet4Address.getByName(hostName) != null;
+		} catch (UnknownHostException ex) {
+			return false;
+		}
+	}
+
+	static public boolean isValidIp6Address(final String hostName) {
+		try {
+			return Inet6Address.getByName(hostName) != null;
+		} catch (UnknownHostException ex) {
+			return false;
+		}
+	}
 
     public static String getNICName(String displayName)
     {
