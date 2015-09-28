@@ -15,6 +15,7 @@ import rocher.adrien.droidopenhomeplayer.Channel.ChannelSongcast;
 
 import rocher.adrien.droidopenhomeplayer.Player.events.EventAirplayVolumeChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventBase;
+import rocher.adrien.droidopenhomeplayer.Player.events.EventFinishedCurrentTrack;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListPlayingTrackID;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListStatusChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventPlayListUpdateShuffle;
@@ -25,9 +26,14 @@ import rocher.adrien.droidopenhomeplayer.Player.events.EventReceiverStatusChange
 import rocher.adrien.droidopenhomeplayer.Player.events.EventRequestVolumeDec;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventRequestVolumeInc;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventStandbyChanged;
+import rocher.adrien.droidopenhomeplayer.Player.events.EventStatusChanged;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventTimeUpdate;
 import rocher.adrien.droidopenhomeplayer.Player.events.EventTrackChanged;
+import rocher.adrien.droidopenhomeplayer.Player.events.EventUpdateTrackMetaText;
+import rocher.adrien.droidopenhomeplayer.Player.events.EventVolumeChanged;
 import rocher.adrien.droidopenhomeplayer.Player.observers.*;
+import rocher.adrien.droidopenhomeplayer.Player.players.ImagePlayerController;
+import rocher.adrien.droidopenhomeplayer.Player.players.VideoPlayerController;
 
 public class PlayManager implements Observer {
 
@@ -40,7 +46,7 @@ public class PlayManager implements Observer {
     private IPlayerController mPlayer = null;
 
     private IPlayerController mAudioPlayer = null;
-    private IPlayerController mVideoPlayer = null;
+    private IPlayerController mVideoController = null;
     private IPlayerController mImagePlayer = null;
 
     private boolean repeatPlayList = false;
@@ -89,24 +95,15 @@ public class PlayManager implements Observer {
      *
      */
     private PlayManager() {
-        /*
-        if (Config.getInstance().getMediaplayerPlayerType().equalsIgnoreCase("MPD")) {
-            log.debug("MPD Player Selected");
-            mPlayer = new MPDPlayerController();
-        } else {
-            log.debug("MPlayer Selected");
-            mPlayer = new MPlayerController();
-        }
-        mPlayer.addObserver(this);
-        */
+        mVideoController = new VideoPlayerController();
+        mVideoController.addObserver(this);
 
+        mImagePlayer = new ImagePlayerController();
+        mImagePlayer.addObserver(this);
+
+        mPlayer = mVideoController;
     }
-
-    /**
-     * Play This Track If MPlayer is already running destroy it
-     *
-     * @param t
-     */
+    
     private void playThis(ChannelBase t) {
         if (t != null) {
             if(standby)
@@ -138,31 +135,36 @@ public class PlayManager implements Observer {
         String MimeType = t.getMime();
         String BaseMimeType = MimeType.split("/")[0];
         if (BaseMimeType != null) {
-            if (BaseMimeType == "Audio")
-            {
+            if (BaseMimeType.equals("audio")) {
+                mVideoController.hide();
+                mImagePlayer.hide();
                 playerController = mAudioPlayer;
             }
-            else if (BaseMimeType == "Video")
-            {
-                playerController = mVideoPlayer;
+            else if (BaseMimeType.equals("video")) {
+                mImagePlayer.hide();
+                mVideoController.show();
+                playerController = mVideoController;
             }
-            else if (BaseMimeType == "Video")
-            {
+            else if (BaseMimeType.equals("image")) {
+                mVideoController.hide();
+                mImagePlayer.show();
                 playerController = mImagePlayer;
             }
             log.trace(MimeType);
         }
         else {
-            playerController = mVideoPlayer;
+            playerController = mVideoController;
         }
         return playerController;
+        //return mVideoController;
     }
 
     /**
      * Set the Next Track to be played
      *
-     * @param t
+     * @param c
      */
+
     public synchronized void setNextTrack(ChannelBase c)
     {
         log.debug("Set Next AV Track :  " + c.getUri());
@@ -519,13 +521,12 @@ public class PlayManager implements Observer {
      * @param bPause
      */
     public synchronized void pause(boolean bPause) {
-        /*
+
         if (mPlayer.isPlaying()) {
             mPlayer.pause(bPause);
             setPaused(bPause);
             setStatus("Paused", "PLAYER");
         }
-        */
     }
 
     /**
@@ -548,10 +549,14 @@ public class PlayManager implements Observer {
      * Stop playin Track
      */
     public synchronized void stop() {
+
+        mPlayer.stop();
         /*
         if (mPlayer.isPlaying()) {
             mPlayer.stop();
         }
+        */
+        /*
         if (current_track instanceof ChannelSongcast) {
             EventStopSongcast ev = new EventStopSongcast();
             obsvSongcast.notifyChange(ev);
@@ -571,7 +576,7 @@ public class PlayManager implements Observer {
      * @param index
      */
     public synchronized void playIndex(long index) {
-        /*
+
         ChannelPlayList t = getTrackFromIndex((int) index);
         if (shuffle) {
             if (!mPlayer.isPlaying()) {
@@ -584,7 +589,7 @@ public class PlayManager implements Observer {
         } else {
             log.debug("Next Track was NULL");
         }
-        */
+
     }
 
     public synchronized void playTrackId(long id) {
@@ -601,9 +606,9 @@ public class PlayManager implements Observer {
      * play it
      */
     public synchronized void play() {
-        /*
+
         if (isPaused()) {
-            if (mPlayer.isPlaying()) {
+            if (!mPlayer.isPlaying()) {
                 mPlayer.resume();
             }
             setStatus("Playing", "PLAYER");
@@ -626,7 +631,6 @@ public class PlayManager implements Observer {
             // log.warn("Track is Already Playing, do not Play");
             // }
         }
-        */
     }
 
     /**
@@ -725,16 +729,16 @@ public class PlayManager implements Observer {
      * @param seconds
      */
     public synchronized void seekAbsolute(long seconds) {
-        /*
         if (mPlayer.isPlaying()) {
             mPlayer.seekAbsolute(seconds);
-        }
-        */
+        } else if (getTrack(0) != null) {
+            playAV(getTrack(0));
+        };
     }
 
     // Volume Control
 
-    /**
+    /**s
      * Set the Volume to this value
      *
      * @param volume
@@ -894,7 +898,6 @@ public class PlayManager implements Observer {
      * Delete All Tracks
      */
     public synchronized void deleteAllTracks() {
-        /*
         deletedAllTracks();
         if ((getCurrentTrack() instanceof ChannelPlayList)) {
             current_track = null;
@@ -902,7 +905,6 @@ public class PlayManager implements Observer {
                 mPlayer.stop();
             }
         }
-        */
     }
 
     /***
@@ -911,7 +913,6 @@ public class PlayManager implements Observer {
      * @param iD
      */
     public synchronized void DeleteTrack(long iD) {
-        /*
         deletedTrack(iD);
         ChannelBase t = getCurrentTrack();
         if (t != null) {
@@ -921,7 +922,6 @@ public class PlayManager implements Observer {
                 }
             }
         }
-        */
     }
 
     /***
@@ -931,7 +931,7 @@ public class PlayManager implements Observer {
         /*
         log.debug("Start of destroy");
         if (mPlayer.isActive()) {
-            log.debug("Attempt to Destroy MPlayer");
+
             mPlayer.destroy();
         }
         */
@@ -1045,7 +1045,6 @@ public class PlayManager implements Observer {
 
     @Override
     public void update(Observable paramObservable, Object obj) {
-        /*
         EventBase e = (EventBase) obj;
         switch (e.getType()) {
             case EVENTFINISHEDCURRENTTRACK:
@@ -1161,7 +1160,6 @@ public class PlayManager implements Observer {
             //
             // }
         }
-        */
     }
 
     /**
