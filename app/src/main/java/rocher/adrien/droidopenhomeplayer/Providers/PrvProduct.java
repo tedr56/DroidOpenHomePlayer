@@ -119,7 +119,7 @@ public class PrvProduct extends DvProviderAvOpenhomeOrgProduct1 implements Obser
     private CopyOnWriteArrayList<Source> sources = new CopyOnWriteArrayList<Source>();
 
     private void initSources() {
-        addSource(friendly_name, "Radio", "Radio", true);
+        //addSource(friendly_name, "Radio", "Radio", true);
         addSource(friendly_name, "Playlist", "Playlist", true);
         if (Config.getInstance().isMediaplayerEnableReceiver()) {
             addSource(friendly_name, "Receiver", "Receiver", true);
