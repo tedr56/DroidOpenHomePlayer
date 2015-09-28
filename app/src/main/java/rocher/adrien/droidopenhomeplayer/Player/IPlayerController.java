@@ -36,4 +36,6 @@ public interface IPlayerController {
 	
 	public String getUniqueId();
 
+	public void show();
+	public void hide();
 }
